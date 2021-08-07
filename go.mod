@@ -1,4 +1,4 @@
-module github.com/theykk/git-user
+module github.com/theykk/git-switch
 
 go 1.16
 

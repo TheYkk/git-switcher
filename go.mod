@@ -1,4 +1,4 @@
-module github.com/theykk/git-switch
+module github.com/theykk/git-switcher
 
 go 1.16
 

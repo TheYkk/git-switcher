@@ -39,6 +39,7 @@ func main() {
 	configs := make(map[string]string)
 
 	if _, err := os.Stat(confPath); os.IsNotExist(err) {
+		// Give permission for only current user
 		err = os.Mkdir(confPath, os.ModeDir|0700)
 		if err != nil {
 			log.Println(err)
@@ -64,12 +65,7 @@ func main() {
 
 	// If gitconfig file is not exist create empty file
 	if _, err := os.Stat(gitConfig); os.IsNotExist(err) {
-		f, e := os.Create(gitConfig)
-		if e != nil {
-			panic(e)
-		}
-		defer f.Close()
-		f.Write([]byte(""))
+		write(gitConfig, []byte(""))
 	}
 	gitConfigHash := hash(gitConfig)
 	if _, ok := configs[gitConfigHash]; !ok {
@@ -81,8 +77,26 @@ func main() {
 
 	//	log.Println(configs)
 	newConfig := ""
-	if len(os.Args) > 1 && len(os.Args[1]) != 0 {
-		newConfig = os.Args[1]
+	if len(os.Args) > 1 {
+		action := os.Args[1]
+		switch action {
+		case "create":
+			prom := promptui.Prompt{
+				Label: "Profile name",
+			}
+
+			result, err := prom.Run()
+			if err != nil {
+				log.Panic(err)
+			}
+
+			// File is not exist write
+			if _, err := os.Stat(confPath + "/" + result); os.IsNotExist(err) {
+				write(confPath+"/"+result, []byte("[user]\n\tname = "+result))
+			} else {
+				color.HiRed("Profile is already exist")
+			}
+		}
 	} else if len(configs) >= 1 {
 		// List git configs
 		var profiles []string
@@ -112,20 +126,19 @@ func main() {
 			return
 		}
 		newConfig = result
-	}
+		// Remove file for link new one
+		err = os.Remove(gitConfig)
+		if err != nil {
+			log.Panic(err)
+		}
 
-	// Remove file for link new one
-	err = os.Remove(gitConfig)
-	if err != nil {
-		log.Panic(err)
+		// Symbolic link to "~/.gitconfig"
+		err = os.Symlink(confPath+"/"+newConfig, gitConfig)
+		if err != nil {
+			log.Panic(err)
+		}
+		color.HiBlue("Switched to profile %q", newConfig)
 	}
-
-	// Symbolic link to "~/.gitconfig"
-	err = os.Symlink(confPath+"/"+newConfig, gitConfig)
-	if err != nil {
-		log.Panic(err)
-	}
-	color.HiBlue("Switched to profile %q", newConfig)
 }
 
 func hash(path string) string {
@@ -135,4 +148,17 @@ func hash(path string) string {
 		log.Fatal(err)
 	}
 	return hex.EncodeToString(h.Sum(nil))
+}
+
+func write(file string, data []byte) {
+	f, e := os.Create(file)
+	if e != nil {
+		log.Panic(e)
+	}
+
+	defer f.Close()
+	_, err := f.Write(data)
+	if err != nil {
+		log.Panic(err)
+	}
 }

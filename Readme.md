@@ -1,6 +1,6 @@
-# Git config changer
+# Git Profile Switcher
 
-This tool helps you to switch your git configuration easily.
+Switch between your git profiles easily
 
 ## Switch Profile
 [![asciicast](https://asciinema.org/a/429439.svg)](https://asciinema.org/a/429439)

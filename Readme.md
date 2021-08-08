@@ -13,7 +13,7 @@ go get github.com/theykk/git-switcher@latest
 ```
 
 ## Switch Profile
-[![asciicast](https://asciinema.org/a/429439.svg)](https://asciinema.org/a/429439)
+[![asciicast](https://asciinema.org/a/429556.svg)](https://asciinema.org/a/429556)
 
 ## Create Profile
-[![asciicast](https://asciinema.org/a/429492.svg)](https://asciinema.org/a/429492)
+[![asciicast](https://asciinema.org/a/429557.svg)](https://asciinema.org/a/429557)

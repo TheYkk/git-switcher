@@ -96,6 +96,49 @@ func main() {
 			} else {
 				color.HiRed("Profile is already exist")
 			}
+		case "delete":
+			// List git configs
+			var profiles []string
+			var pos int
+			i := 0
+			for hash, val := range configs {
+				// Find current config index
+				if hash == gitConfigHash {
+					pos = i
+				}
+				profiles = append(profiles, val)
+				i++
+			}
+
+			prompt := promptui.Select{
+				Label: "Select Git Config (Current: " + configs[gitConfigHash] + ")",
+				Items: profiles,
+				// Change cursor to current config
+				CursorPos:    pos,
+				HideSelected: true,
+			}
+
+			_, result, err := prompt.Run()
+			if err != nil {
+				log.Panic(err)
+			}
+
+			prom := promptui.Prompt{
+				Label: "Are you sure ? Y/N",
+			}
+			asd, err := prom.Run()
+			if err != nil {
+				log.Panic(err)
+			}
+			if asd == "y" || asd == "Y" {
+				err = os.Remove(confPath + "/" + result)
+				if err != nil {
+					log.Panic(err)
+				}
+				color.HiBlue("Profile deleted %q", result)
+			} else {
+				color.HiBlue("Profile not deleted %q", result)
+			}
 		}
 	} else if len(configs) >= 1 {
 		// List git configs

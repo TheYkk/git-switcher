@@ -139,6 +139,30 @@ func main() {
 			} else {
 				color.HiBlue("Profile not deleted %q", result)
 			}
+		case "rename":
+			prom := promptui.Prompt{
+				Label: "Profile name",
+			}
+
+			result, err := prom.Run()
+			if err != nil {
+				log.Panic(err)
+			}
+
+			promD := promptui.Prompt{
+				Label: "Desired Profile name",
+			}
+
+			resultD, err := promD.Run()
+			if err != nil {
+				log.Panic(err)
+			}
+
+			err = os.Rename(confPath+"/"+result, confPath+"/"+resultD)
+			if err != nil {
+				log.Panic(err)
+			}
+
 		}
 	} else if len(configs) >= 1 {
 		// List git configs

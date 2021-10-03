@@ -1,5 +1,5 @@
 <p align="center">
-  <img height="300" src="https://user-images.githubusercontent.com/53150440/132265128-ae52428b-ace5-423e-b726-5d6099d00206.png"/><br/>
+  <img height="300" src="https://user-images.githubusercontent.com/53150440/135754337-e9a12311-9eb0-4de6-8d19-348341f3b200.png"/><br/>
   <a>
         <img src="https://img.shields.io/github/v/release/theykk/git-switcher?style=flat&labelColor=1C2C2E&color=abc3d6&logo=GitHub&logoColor=white">
   </a>
@@ -15,10 +15,6 @@
 # Git Profile Switcher
 
 Switch between your git profiles easily
-
-|                                                                                                                        |                                                                                                                 |
-| ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| ![list-command](https://user-images.githubusercontent.com/53150440/132383823-3970f586-1281-4bde-8f9d-6e6463263b48.gif) | ![print](https://user-images.githubusercontent.com/53150440/132392553-6189f7bc-494f-472e-b6b4-335e45d539cf.gif) |
 
 ## Install
 
@@ -36,15 +32,23 @@ go get github.com/theykk/git-switcher@latest
 
 ## Switch Profile
 
-[![asciicast](https://asciinema.org/a/429556.svg)](https://asciinema.org/a/429556)
+![Switcher](https://user-images.githubusercontent.com/53150440/135753964-94d83bf5-597c-4983-b0cf-5da6f12e6c7c.gif)
 
 ## Create Profile
 
-[![asciicast](https://asciinema.org/a/429557.svg)](https://asciinema.org/a/429557)
+![Create](https://user-images.githubusercontent.com/53150440/135753994-aa60050b-020c-422b-9fed-0a266f550dda.gif)
+
+## Delete Profile
+
+![Delete](https://user-images.githubusercontent.com/53150440/135754022-55268cc5-9979-4802-8a93-0e09c158cd6c.gif)
+
+## Rename Profile
+
+![Rename](https://user-images.githubusercontent.com/53150440/135754365-f8e347d9-89e1-4a34-a131-edeb7e004047.gif)
 
 ## Feedback
 
-If you have any feedback, please reach out to us at nedim.akar53411@gmail.com
+If you have any feedback, please reach out to us at yusufkaan142@gmail.com
 
 ## License
 

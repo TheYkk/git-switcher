@@ -19,13 +19,17 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/fatih/color"
+	"github.com/google/shlex"
 	"github.com/manifoldco/promptui"
 	"github.com/mitchellh/go-homedir"
 	"io"
 	"io/fs"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
+	"strings"
 )
 
 func main() {
@@ -162,7 +166,29 @@ func main() {
 			if err != nil {
 				log.Panic(err)
 			}
+		case "edit":
+			editor := os.Getenv("EDITOR")
+			if editor == "" {
+				editor = "vim"
 
+				if runtime.GOOS == "windows" {
+					editor = "notepad"
+				}
+			}
+
+			split, err := shlex.Split(editor)
+			if err != nil {
+				split = []string{strings.Split(editor, " ")[0]}
+			}
+			split = append(split, gitConfig)
+
+			cmd := exec.Command(split[0], split[1:]...)
+			cmd.Stdin = os.Stdin
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			if err = cmd.Run(); err != nil {
+				color.HiRed("Err %s", err)
+			}
 		}
 	} else if len(configs) >= 1 {
 		// List git configs

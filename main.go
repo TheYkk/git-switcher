@@ -28,6 +28,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 )
 
 func main() {
@@ -174,11 +175,21 @@ func main() {
 				}
 			}
 
-			cmd := exec.Command(editor, gitConfig)
+			split := strings.Split(editor, " ")
+			split = append(split, gitConfig)
+
+			editor = split[0]
+			executableEditor, err := exec.LookPath(editor)
+			if err != nil {
+				color.HiRed("Please set the $EDITOR environment variable or install vim.")
+			}
+
+			cmd := exec.Command(executableEditor, split[1:]...)
 			cmd.Stdin = os.Stdin
 			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
 			if err = cmd.Run(); err != nil {
-				color.HiRed("Please set the $EDITOR environment variable or install vim.")
+				color.HiRed("Err %s", err)
 			}
 		}
 	} else if len(configs) >= 1 {

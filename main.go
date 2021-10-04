@@ -19,6 +19,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/fatih/color"
+	"github.com/google/shlex"
 	"github.com/manifoldco/promptui"
 	"github.com/mitchellh/go-homedir"
 	"io"
@@ -171,19 +172,17 @@ func main() {
 				editor = "vim"
 
 				if runtime.GOOS == "windows" {
-					editor = "notepad++"
+					editor = "notepad"
 				}
 			}
 
-			split := strings.Split(editor, " ")
+			split, err := shlex.Split(editor)
+			if err != nil {
+				split = []string{strings.Split(editor, " ")[0]}
+			}
 			split = append(split, gitConfig)
 
-			executableEditor, err := exec.LookPath(split[0])
-			if err != nil {
-				color.HiRed("Please set the $EDITOR environment variable or install vim.")
-			}
-
-			cmd := exec.Command(executableEditor, split[1:]...)
+			cmd := exec.Command(split[0], split[1:]...)
 			cmd.Stdin = os.Stdin
 			cmd.Stdout = os.Stdout
 			cmd.Stderr = os.Stderr

@@ -178,8 +178,7 @@ func main() {
 			split := strings.Split(editor, " ")
 			split = append(split, gitConfig)
 
-			editor = split[0]
-			executableEditor, err := exec.LookPath(editor)
+			executableEditor, err := exec.LookPath(split[0])
 			if err != nil {
 				color.HiRed("Please set the $EDITOR environment variable or install vim.")
 			}

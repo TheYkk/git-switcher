@@ -25,7 +25,9 @@ import (
 	"io/fs"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 )
 
 func main() {
@@ -162,7 +164,22 @@ func main() {
 			if err != nil {
 				log.Panic(err)
 			}
+		case "edit":
+			editor := os.Getenv("EDITOR")
+			if editor == "" {
+				editor = "vim"
 
+				if runtime.GOOS == "windows" {
+					editor = "notepad++"
+				}
+			}
+
+			cmd := exec.Command(editor, gitConfig)
+			cmd.Stdin = os.Stdin
+			cmd.Stdout = os.Stdout
+			if err = cmd.Run(); err != nil {
+				color.HiRed("Please set the $EDITOR environment variable or install vim.")
+			}
 		}
 	} else if len(configs) >= 1 {
 		// List git configs

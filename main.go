@@ -65,11 +65,14 @@ func main() {
 	}
 
 	// Check current gitconfig is exist in configs
-	gitConfig, _ := homedir.Expand("~/.gitconfig")
+	gitConfig, err := homedir.Expand("~/.gitconfig")
+	if err != nil {
+		log.Panic(err)
+	}
 
 	// If gitconfig file is not exist create empty file
 	if _, err := os.Stat(gitConfig); os.IsNotExist(err) {
-		write(gitConfig, []byte(""))
+		write(gitConfig, []byte("[user]\n\tname = username"))
 	}
 	gitConfigHash := hash(gitConfig)
 	if _, ok := configs[gitConfigHash]; !ok {
@@ -130,12 +133,13 @@ func main() {
 			prom := promptui.Prompt{
 				Label: "Are you sure ? Y/N",
 			}
-			asd, err := prom.Run()
+			answer, err := prom.Run()
 			if err != nil {
 				log.Panic(err)
 			}
-			if asd == "y" || asd == "Y" {
+			if answer == "y" || answer == "Y" {
 				err = os.Remove(confPath + "/" + result)
+				err = os.Remove(gitConfig)
 				if err != nil {
 					log.Panic(err)
 				}
@@ -163,6 +167,8 @@ func main() {
 			}
 
 			err = os.Rename(confPath+"/"+result, confPath+"/"+resultD)
+			err = os.Remove(gitConfig)
+			err = os.Symlink(confPath+"/"+resultD, gitConfig)
 			if err != nil {
 				log.Panic(err)
 			}
@@ -235,7 +241,10 @@ func main() {
 }
 
 func hash(path string) string {
-	f, _ := os.Open(path)
+	f, err := os.Open(path)
+	if err != nil {
+		log.Panic(err)
+	}
 	h := md5.New()
 	if _, err := io.Copy(h, f); err != nil {
 		log.Fatal(err)

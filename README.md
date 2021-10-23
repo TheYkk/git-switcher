@@ -1,6 +1,9 @@
 <p align="center">
   <img height="300" src="https://user-images.githubusercontent.com/53150440/135754337-e9a12311-9eb0-4de6-8d19-348341f3b200.png"/><br/>
   <a>
+        <img src="https://github.com/TheYkk/git-switcher/actions/workflows/release.yml/badge.svg">
+  </a>
+  <a>
         <img src="https://img.shields.io/github/v/release/theykk/git-switcher?style=flat&labelColor=1C2C2E&color=abc3d6&logo=GitHub&logoColor=white">
   </a>
   <a>

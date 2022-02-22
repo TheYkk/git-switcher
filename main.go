@@ -195,6 +195,43 @@ func main() {
 			if err = cmd.Run(); err != nil {
 				color.HiRed("Err %s", err)
 			}
+		case "switch":
+			profile := os.Args[2]
+			var profiles []string
+			err := filepath.Walk(confPath, func(path string, info os.FileInfo, err error) error {
+				profiles = append(profiles, info.Name())
+				return nil
+			})
+			if err != nil {
+				fmt.Println("Unable to list configs : %v\n", err)
+				return
+			}
+
+			var exist bool = false
+			for _, x := range profiles {
+				if x == profile {
+					exist = true
+					break
+				}
+			}
+
+			if exist {
+				// Remove file for link new one
+				err = os.Remove(gitConfig)
+				if err != nil {
+					log.Panic(err)
+				}
+
+				// Symbolic link to "~/.gitconfig"
+				err = os.Symlink(confPath+"/"+profile, gitConfig)
+				if err != nil {
+					log.Panic(err)
+				}
+				color.HiBlue("Switched to profile %q", profile)
+			} else {
+				fmt.Print("Element is not present in the array.")
+				return
+			}
 		}
 	} else if len(configs) >= 1 {
 		// List git configs

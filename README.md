@@ -33,6 +33,16 @@ With golang
 go get github.com/theykk/git-switcher@latest
 ```
 
+With AUR
+```
+yay -S git-switcher
+```
+or you can install like this:
+```
+git clone https://aur.archlinux.org/git-switcher.git
+makepkg -is 
+```
+
 ## Switch Profile
 
 ![Switcher](https://user-images.githubusercontent.com/53150440/135753964-94d83bf5-597c-4983-b0cf-5da6f12e6c7c.gif)

@@ -35,7 +35,7 @@ go get github.com/theykk/git-switcher@latest
 
 With AUR
 ```
-sudo yay -S git-switcher
+yay -S git-switcher
 ```
 or you can install like this:
 ```

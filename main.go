@@ -44,7 +44,7 @@ func main() {
 
 	if _, err := os.Stat(confPath); os.IsNotExist(err) {
 		// Give permission for only current user
-		err = os.Mkdir(confPath, os.ModeDir|0700)
+		err = os.MkdirAll(confPath, os.ModeDir|0700)
 		if err != nil {
 			log.Println(err)
 		}

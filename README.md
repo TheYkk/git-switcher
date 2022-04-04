@@ -30,7 +30,7 @@ brew install theykk/tap/git-switcher
 With golang
 
 ```
-go get github.com/theykk/git-switcher@latest
+go install github.com/theykk/git-switcher@latest
 ```
 
 With AUR

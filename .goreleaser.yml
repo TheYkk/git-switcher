@@ -28,3 +28,14 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+brews:
+  - tap:
+      owner: theykk
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+    folder: Formula
+    description: "Switch between your git profiles easily"
+    license: "Apache 2.0"
+    install: |
+      bin.install "git-switcher"

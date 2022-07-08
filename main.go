@@ -39,7 +39,7 @@ func main() {
 	}
 
 	log.SetFlags(log.Lshortfile)
-	// hash: filename
+	// md5 hash: filename
 	configs := make(map[string]string)
 
 	if _, err := os.Stat(confPath); os.IsNotExist(err) {
@@ -97,7 +97,7 @@ func main() {
 				log.Panic(err)
 			}
 
-			// File is not exist write
+			// File is not exist, write to new file
 			if _, err := os.Stat(confPath + "/" + result); os.IsNotExist(err) {
 				write(confPath+"/"+result, []byte("[user]\n\tname = "+result))
 			} else {

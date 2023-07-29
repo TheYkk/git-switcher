@@ -76,7 +76,7 @@ func main() {
 	}
 	gitConfigHash := hash(gitConfig)
 	if _, ok := configs[gitConfigHash]; !ok {
-		err := os.Link(gitConfig, confPath+"/Old Config")
+		err := os.Link(gitConfig, confPath+"/old-configs")
 		if err != nil {
 			log.Panic(err)
 		}
@@ -106,12 +106,12 @@ func main() {
 		case "delete":
 			// List git configs
 			var profiles []string
-			var pos int
+			var currentConfigPos int
 			i := 0
 			for hash, val := range configs {
 				// Find current config index
 				if hash == gitConfigHash {
-					pos = i
+					currentConfigPos = i
 				}
 				profiles = append(profiles, val)
 				i++
@@ -121,7 +121,7 @@ func main() {
 				Label: "Select Git Config (Current: " + configs[gitConfigHash] + ")",
 				Items: profiles,
 				// Change cursor to current config
-				CursorPos:    pos,
+				CursorPos:    currentConfigPos,
 				HideSelected: true,
 			}
 
@@ -139,9 +139,15 @@ func main() {
 			}
 			if answer == "y" || answer == "Y" {
 				err = os.Remove(confPath + "/" + result)
-				err = os.Remove(gitConfig)
 				if err != nil {
 					log.Panic(err)
+				}
+				// if the selected config is current one
+				if result == profiles[currentConfigPos] {
+					err = os.Remove(gitConfig)
+					if err != nil {
+						log.Panic(err)
+					}
 				}
 				color.HiBlue("Profile deleted %q", result)
 			} else {
@@ -233,48 +239,49 @@ func main() {
 				return
 			}
 		}
-	} else if len(configs) >= 1 {
-		// List git configs
-		var profiles []string
-		var pos int
-		i := 0
-		for hash, val := range configs {
-			// Find current config index
-			if hash == gitConfigHash {
-				pos = i
-			}
-			profiles = append(profiles, val)
-			i++
-		}
-
-		prompt := promptui.Select{
-			Label: "Select Git Config (Current: " + configs[gitConfigHash] + ")",
-			Items: profiles,
-			// Change cursor to current config
-			CursorPos:    pos,
-			HideSelected: true,
-		}
-
-		_, result, err := prompt.Run()
-
-		if err != nil {
-			fmt.Printf("Prompt failed %v\n", err)
-			return
-		}
-		newConfig = result
-		// Remove file for link new one
-		err = os.Remove(gitConfig)
-		if err != nil {
-			log.Panic(err)
-		}
-
-		// Symbolic link to "~/.gitconfig"
-		err = os.Symlink(confPath+"/"+newConfig, gitConfig)
-		if err != nil {
-			log.Panic(err)
-		}
-		color.HiBlue("Switched to profile %q", newConfig)
+		return
 	}
+	// List git configs
+	var profiles []string
+	var currentConfigPos int
+	i := 0
+	for hash, val := range configs {
+		// Find current config index
+		if hash == gitConfigHash {
+			currentConfigPos = i
+		}
+		profiles = append(profiles, val)
+		i++
+	}
+
+	prompt := promptui.Select{
+		Label: "Select Git Config (Current: " + configs[gitConfigHash] + ")",
+		Items: profiles,
+		// Change cursor to current config
+		CursorPos:    currentConfigPos,
+		HideSelected: true,
+	}
+
+	_, result, err := prompt.Run()
+
+	if err != nil {
+		fmt.Printf("Prompt failed %v\n", err)
+		return
+	}
+	newConfig = result
+	// Remove file for link new one
+	err = os.Remove(gitConfig)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	// Symbolic link to "~/.gitconfig"
+	err = os.Symlink(confPath+"/"+newConfig, gitConfig)
+	if err != nil {
+		log.Panic(err)
+	}
+	color.HiBlue("Switched to profile %q", newConfig)
+	
 }
 
 func hash(path string) string {

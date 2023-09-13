@@ -18,10 +18,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	"github.com/fatih/color"
-	"github.com/google/shlex"
-	"github.com/manifoldco/promptui"
-	"github.com/mitchellh/go-homedir"
 	"io"
 	"io/fs"
 	"log"
@@ -30,6 +26,11 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/fatih/color"
+	"github.com/google/shlex"
+	"github.com/manifoldco/promptui"
+	"github.com/mitchellh/go-homedir"
 )
 
 func main() {
@@ -44,7 +45,7 @@ func main() {
 
 	if _, err := os.Stat(confPath); os.IsNotExist(err) {
 		// Give permission for only current user
-		err = os.MkdirAll(confPath, os.ModeDir|0700)
+		err = os.MkdirAll(confPath, os.ModeDir|0o700)
 		if err != nil {
 			log.Println(err)
 		}
@@ -263,7 +264,6 @@ func main() {
 	}
 
 	_, result, err := prompt.Run()
-
 	if err != nil {
 		fmt.Printf("Prompt failed %v\n", err)
 		return
@@ -281,7 +281,6 @@ func main() {
 		log.Panic(err)
 	}
 	color.HiBlue("Switched to profile %q", newConfig)
-	
 }
 
 func hash(path string) string {

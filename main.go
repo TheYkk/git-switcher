@@ -174,7 +174,13 @@ func main() {
 			}
 
 			err = os.Rename(confPath+"/"+result, confPath+"/"+resultD)
+			if err != nil {
+				log.Panic(err)
+			}
 			err = os.Remove(gitConfig)
+			if err != nil {
+				log.Panic(err)
+			}
 			err = os.Symlink(confPath+"/"+resultD, gitConfig)
 			if err != nil {
 				log.Panic(err)
@@ -210,7 +216,7 @@ func main() {
 				return nil
 			})
 			if err != nil {
-				fmt.Println("Unable to list configs : %v\n", err)
+				fmt.Printf("Unable to list configs : %v\n", err)
 				return
 			}
 
@@ -236,7 +242,7 @@ func main() {
 				}
 				color.HiBlue("Switched to profile %q", profile)
 			} else {
-				fmt.Print("Element is not present in the array.")
+				color.HiYellow("Element is not present in the array.")
 				return
 			}
 		}

@@ -10,6 +10,8 @@ builds:
       - linux
       - windows
       - darwin
+      - openbsd
+      - freebsd
 archives:
   - replacements:
       darwin: Darwin

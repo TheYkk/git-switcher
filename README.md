@@ -43,6 +43,53 @@ git clone https://aur.archlinux.org/git-switcher.git
 makepkg -is 
 ```
 
+## Commands
+
+Git Switcher offers several commands to help you manage your Git profiles:
+
+### `list`
+
+Lists all your saved git profiles. The currently active profile will be highlighted with an asterisk (*) and marked as `(current)`.
+
+**Usage:**
+
+```sh
+git-switcher list
+```
+
+**Example Output:**
+
+```
+Available Git profiles:
+  work-profile
+* personal-profile (current)
+  freelance-project
+```
+
+### `switch`
+
+Allows you to interactively select and switch to a different Git profile from your saved list. This is also the default behavior when running `git-switcher` without any subcommand.
+
+*(The GIF below demonstrates this functionality)*
+
+### `create`
+
+Guides you through the process of creating and saving a new Git profile.
+
+*(The GIF below demonstrates this functionality)*
+
+### `delete`
+
+Allows you to select and delete one of your saved Git profiles.
+
+*(The GIF below demonstrates this functionality)*
+
+### `rename`
+
+Allows you to rename an existing saved Git profile.
+
+*(The GIF below demonstrates this functionality)*
+
 ## Switch Profile
 
 ![Switcher](https://user-images.githubusercontent.com/53150440/135753964-94d83bf5-597c-4983-b0cf-5da6f12e6c7c.gif)

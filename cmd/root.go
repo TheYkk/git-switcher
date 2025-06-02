@@ -1,7 +1,3 @@
-/*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-
-*/
 package cmd
 
 import (
@@ -18,7 +14,6 @@ import (
 	"github.com/theykk/git-switcher/utils"
 )
 
-// rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "git-switcher",
 	Short: "A tool to easily switch between different git configurations.",
@@ -28,9 +23,6 @@ and switch between them with a simple interactive prompt or direct commands.
 This is useful when you work on different projects that require
 different user names or email addresses for git commits.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// This is the default action when no subcommand is provided.
-		// This logic is taken from the original main() function, after os.Args parsing.
-
 		confPath, err := homedir.Expand("~/.config/gitconfigs")
 		if err != nil {
 			log.Panic(err)
@@ -42,7 +34,7 @@ different user names or email addresses for git commits.`,
 		if _, err := os.Stat(confPath); os.IsNotExist(err) {
 			err = os.MkdirAll(confPath, os.ModeDir|0o700)
 			if err != nil {
-				log.Println(err) // Log and continue, maybe it's just a read-only system
+				log.Println(err)
 			}
 		}
 
@@ -50,16 +42,15 @@ different user names or email addresses for git commits.`,
 			if d.IsDir() {
 				return nil
 			}
-			if e != nil { // Check for errors from WalkDir itself
+			if e != nil {
 				log.Printf("Warning: error accessing path %s: %v\n", path, e)
-				return e // or return nil to attempt to continue
+				return e
 			}
 			configs[utils.Hash(path)] = filepath.Base(path)
 			return nil
 		})
 		if err != nil {
 			log.Printf("Error walking directory %s: %v\n", confPath, err)
-			// Decide if this is fatal or if the program can continue (e.g. if it's just for listing)
 		}
 
 		gitConfig, err := homedir.Expand("~/.gitconfig")
@@ -72,27 +63,21 @@ different user names or email addresses for git commits.`,
 		}
 		gitConfigHash := utils.Hash(gitConfig)
 
-		// Ensure old-configs link is handled (idempotently)
-		// This part was originally before os.Args check.
-		// It makes sense to ensure the current .gitconfig is backed up if it's not a known profile.
 		if _, ok := configs[gitConfigHash]; !ok {
 			oldConfigsPath := filepath.Join(confPath, "old-configs")
-			// Check if .gitconfig is not already a symlink before attempting to link it
-			// This avoids linking a symlink itself if .gitconfig is already managed.
 			lstatInfo, lstatErr := os.Lstat(gitConfig)
 			isSymlink := false
 			if lstatErr == nil && (lstatInfo.Mode()&os.ModeSymlink != 0) {
 				isSymlink = true
 			}
 
-			if !isSymlink { // Only try to link if .gitconfig is a regular file
+			if !isSymlink {
 				if _, statErr := os.Stat(oldConfigsPath); os.IsNotExist(statErr) {
 					errLink := os.Link(gitConfig, oldConfigsPath)
 					if errLink != nil {
 						log.Printf("Warning: Failed to link current .gitconfig to %s: %v\n", oldConfigsPath, errLink)
 					} else {
 						log.Printf("Info: Current .gitconfig backed up to %s\n", oldConfigsPath)
-						// Add the newly backed-up config to the current session's list
 						configs[utils.Hash(oldConfigsPath)] = filepath.Base(oldConfigsPath) 
 					}
 				} else if statErr == nil {
@@ -103,9 +88,7 @@ different user names or email addresses for git commits.`,
 			}
 		}
 		
-		// Re-populate configs map after potential backup, to ensure `old-configs` is listed if created.
-		// This is a bit redundant if the backup didn't happen or already existed, but ensures consistency.
-		configs = make(map[string]string) // Reset before re-populating
+		configs = make(map[string]string)
 		err = filepath.WalkDir(confPath+"/", func(path string, d fs.DirEntry, e error) error {
 			if d.IsDir() { return nil }
 			if e != nil { log.Printf("Warning: error accessing path %s: %v\n", path, e); return e }
@@ -114,19 +97,15 @@ different user names or email addresses for git commits.`,
 		})
 		if err != nil { log.Printf("Error re-walking directory %s: %v\n", confPath, err) }
 
-
 		var profiles []string
-		var currentConfigPos int = -1 // Initialize to -1 to indicate not found
+		var currentConfigPos int = -1
 		i := 0
 		currentConfigFilename := "unknown (current .gitconfig may not be a saved profile)"
 		
-		// Check if gitConfigHash is valid and present in configs
-		// This might happen if .gitconfig is empty or unreadable initially
 		_, gitConfigHashOk := configs[gitConfigHash]
 		if gitConfigHashOk {
 			currentConfigFilename = configs[gitConfigHash]
 		}
-
 
 		for hash, val := range configs {
 			if hash == gitConfigHash {
@@ -138,13 +117,10 @@ different user names or email addresses for git commits.`,
 		
 		if len(profiles) == 0 {
 			fmt.Printf("No git configuration profiles found in %s.\n", confPath)
-			fmt.Println("You can create one using 'git-switcher create' (once implemented as a subcommand).")
+			fmt.Println("You can create one using 'git-switcher create'.")
 			return
 		}
 		
-		// If currentConfigPos remained -1, it means .gitconfig's hash wasn't in `configs`.
-		// In promptui, CursorPos defaults to 0 if out of bounds, which is fine.
-		// But the label should be accurate.
 		selectLabel := "Select Git Config"
 		if currentConfigPos != -1 {
 			selectLabel += " (Current: " + currentConfigFilename + ")"
@@ -152,11 +128,10 @@ different user names or email addresses for git commits.`,
 			selectLabel += " (Current: " + currentConfigFilename + " - not in saved profiles)"
 		}
 
-
 		prompt := promptui.Select{
 			Label:        selectLabel,
 			Items:        profiles,
-			CursorPos:    currentConfigPos, // promptui handles -1 by defaulting to 0
+			CursorPos:    currentConfigPos,
 			HideSelected: true,
 		}
 
@@ -184,8 +159,6 @@ different user names or email addresses for git commits.`,
 	},
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
@@ -194,22 +167,12 @@ func Execute() {
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.git-switcher.yaml)")
-
-	// Add subcommands
 	rootCmd.AddCommand(createCmd)
 	rootCmd.AddCommand(deleteCmd)
 	rootCmd.AddCommand(renameCmd)
 	rootCmd.AddCommand(editCmd)
 	rootCmd.AddCommand(switchCmd)
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle") // Example flag removed
+	rootCmd.AddCommand(listCmd)
 }
 
 

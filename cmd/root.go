@@ -2,16 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	// "io/fs" // Removed unused import
-	// "log" // Removed unused import
 	"os"
-	// "path/filepath" // Removed unused import
 
-	// "github.com/fatih/color" // Removed unused import
-	// "github.com/manifoldco/promptui" // Removed unused import
-	// "github.com/mitchellh/go-homedir" // Removed unused import
 	"github.com/spf13/cobra"
-	// "github.com/theykk/git-switcher/utils" // Removed unused import
 )
 
 // rootCmd represents the base command when called without any subcommands

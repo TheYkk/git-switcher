@@ -75,6 +75,5 @@ A new configuration file will be created in the ~/.config/gitconfigs directory.`
 func init() {
 	// This function is called when the package is initialized.
 	// We are adding the createCmd to the rootCmd here.
-	// This will be done for all command files.
-	// rootCmd.AddCommand(createCmd) // Will be added in root.go's init
+	// rootCmd.AddCommand(createCmd) // Commands are added in root.go's init
 }

@@ -25,7 +25,6 @@ import (
 	"github.com/manifoldco/promptui"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
-	// main_pkg "github.com/theykk/git-switcher" // Not needed if not using Hash/Write
 )
 
 // renameCmd represents the rename command
@@ -135,6 +134,5 @@ If the renamed profile is the currently active one, the ~/.gitconfig symlink wil
 }
 
 func init() {
-	// Will be added in root.go
-	// rootCmd.AddCommand(renameCmd)
+	// rootCmd.AddCommand(renameCmd) // Commands are added in root.go's init
 }

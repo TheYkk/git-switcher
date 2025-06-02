@@ -77,6 +77,5 @@ This allows you to directly modify the active git configuration.`,
 }
 
 func init() {
-	// Will be added in root.go
-	// rootCmd.AddCommand(editCmd)
+	// rootCmd.AddCommand(editCmd) // Commands are added in root.go's init
 }

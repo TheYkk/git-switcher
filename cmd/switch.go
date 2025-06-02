@@ -23,7 +23,6 @@ import (
 	"github.com/fatih/color"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
-	// main_pkg "github.com/theykk/git-switcher" // Not needed for this command
 )
 
 // switchCmd represents the switch command
@@ -88,6 +87,5 @@ The ~/.gitconfig file will be updated to be a symlink to the selected profile.`,
 }
 
 func init() {
-	// Will be added in root.go
-	// rootCmd.AddCommand(switchCmd)
+	// rootCmd.AddCommand(switchCmd) // Commands are added in root.go's init
 }

@@ -2,12 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	// "io/fs" // Removed unused import
 	"log"
 	"os"
 	"path/filepath"
 
-	// "github.com/fatih/color" // Removed unused import
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/theykk/git-switcher/utils"

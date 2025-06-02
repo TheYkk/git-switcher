@@ -142,6 +142,5 @@ If the deleted profile is the currently active one, ~/.gitconfig will also be re
 }
 
 func init() {
-	// Will be added in root.go
-	// rootCmd.AddCommand(deleteCmd)
+	// rootCmd.AddCommand(deleteCmd) // Commands are added in root.go's init
 }

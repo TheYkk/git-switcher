@@ -21,26 +21,28 @@ Switch between your git profiles easily
 
 ## Install
 
-With Brew
+### From Source (Rust)
 
-```
-brew install theykk/tap/git-switcher
+Requirements:
+- Rust (cargo)
+
+```bash
+git clone https://github.com/TheYkk/git-switcher.git
+cd git-switcher
+cargo install --path .
 ```
 
-With golang
+### Usage
 
-```
-go install github.com/theykk/git-switcher@latest
-```
+Run `git-switcher` to see the interactive menu, or use subcommands:
 
-With AUR
-```
-yay -S git-switcher
-```
-or you can install like this:
-```
-git clone https://aur.archlinux.org/git-switcher.git
-makepkg -is 
+```bash
+git-switcher create   # Create a new profile
+git-switcher list     # List profiles
+git-switcher switch <profile> # Switch to a profile
+git-switcher rename   # Rename a profile
+git-switcher delete   # Delete a profile
+git-switcher edit     # Edit current profile
 ```
 
 ## Switch Profile
@@ -64,5 +66,5 @@ makepkg -is
 If you have any feedback, please reach out to us at yusufkaan142@gmail.com
 
 ## License
-
+`
 [Apache-2.0](https://choosealicense.com/licenses/apache-2.0/)

@@ -1,0 +1,13 @@
+[package]
+name = "git-switcher"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.4", features = ["derive"] }
+dirs = "5.0"
+anyhow = "1.0"
+inquire = "0.6"
+colored = "2.0"
+md5 = "0.7"
+walkdir = "2.4"

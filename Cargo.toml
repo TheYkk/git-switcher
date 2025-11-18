@@ -2,6 +2,10 @@
 name = "git-switcher"
 version = "0.1.0"
 edition = "2021"
+description = "A tool to easily switch between different git configurations"
+repository = "https://github.com/TheYkk/git-switcher"
+license = "Apache-2.0"
+authors = ["Kaan Karakaya <yusufkaan142@gmail.com>"]
 
 [dependencies]
 clap = { version = "4.4", features = ["derive"] }

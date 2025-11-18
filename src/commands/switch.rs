@@ -18,16 +18,19 @@ fn run(profile_name: &str) -> Result<()> {
     let target_profile_path = config_dir.join(profile_name);
 
     if !target_profile_path.exists() {
-        eprintln!("{} Profile {:?} does not exist at {:?}", "Error:".red(), profile_name, target_profile_path);
+        eprintln!(
+            "{} Profile {:?} does not exist at {:?}",
+            "Error:".red(),
+            profile_name,
+            target_profile_path
+        );
         // List available profiles
         println!("Available profiles:");
         if let Ok(entries) = fs::read_dir(&config_dir) {
-            for entry in entries {
-                if let Ok(entry) = entry {
-                    if let Some(name) = entry.file_name().to_str() {
-                        if !name.starts_with('.') {
-                            println!("  - {}", name);
-                        }
+            for entry in entries.flatten() {
+                if let Some(name) = entry.file_name().to_str() {
+                    if !name.starts_with('.') {
+                        println!("  - {}", name);
                     }
                 }
             }
@@ -43,7 +46,12 @@ fn run(profile_name: &str) -> Result<()> {
     // Create symlink
     symlink(&target_profile_path, &git_config_path).context("Failed to create symlink")?;
 
-    println!("{} Switched to profile {:?}. ~/.gitconfig now points to {:?}.", "Success:".blue(), profile_name, target_profile_path);
+    println!(
+        "{} Switched to profile {:?}. ~/.gitconfig now points to {:?}.",
+        "Success:".blue(),
+        profile_name,
+        target_profile_path
+    );
 
     Ok(())
 }

@@ -31,7 +31,10 @@ fn run() -> Result<()> {
     }
 
     if profiles.is_empty() {
-        println!("No git configuration profiles found to rename in {:?}.", config_dir);
+        println!(
+            "No git configuration profiles found to rename in {:?}.",
+            config_dir
+        );
         return Ok(());
     }
 
@@ -47,9 +50,13 @@ fn run() -> Result<()> {
     let new_name = Text::new(&format!("Enter new name for profile {:?}", old_name))
         .with_validator(move |input: &str| {
             if input.is_empty() {
-                Ok(inquire::validator::Validation::Invalid("Name cannot be empty".into()))
+                Ok(inquire::validator::Validation::Invalid(
+                    "Name cannot be empty".into(),
+                ))
             } else if profiles.contains(&input.to_string()) && input != old_name_clone {
-                Ok(inquire::validator::Validation::Invalid(format!("Profile {:?} already exists", input).into()))
+                Ok(inquire::validator::Validation::Invalid(
+                    format!("Profile {:?} already exists", input).into(),
+                ))
             } else {
                 Ok(inquire::validator::Validation::Valid)
             }
@@ -58,7 +65,10 @@ fn run() -> Result<()> {
         .context("Prompt failed")?;
 
     if old_name == new_name {
-        println!("{}", "New name is the same as the old name. No changes made.".yellow());
+        println!(
+            "{}",
+            "New name is the same as the old name. No changes made.".yellow()
+        );
         return Ok(());
     }
 
@@ -66,7 +76,12 @@ fn run() -> Result<()> {
     let new_path = config_dir.join(&new_name);
 
     fs::rename(&old_path, &new_path).context("Failed to rename profile")?;
-    println!("{} Profile {:?} renamed to {:?}.", "Success:".green(), old_name, new_name);
+    println!(
+        "{} Profile {:?} renamed to {:?}.",
+        "Success:".green(),
+        old_name,
+        new_name
+    );
 
     // Update symlink if active
     if git_config_path.exists() || fs::symlink_metadata(&git_config_path).is_ok() {
@@ -74,7 +89,11 @@ fn run() -> Result<()> {
             if target == old_path {
                 fs::remove_file(&git_config_path).context("Failed to remove old symlink")?;
                 symlink(&new_path, &git_config_path).context("Failed to create new symlink")?;
-                println!("{} Active profile symlink updated to {:?}.", "Info:".blue(), new_name);
+                println!(
+                    "{} Active profile symlink updated to {:?}.",
+                    "Info:".blue(),
+                    new_name
+                );
             }
         }
     }

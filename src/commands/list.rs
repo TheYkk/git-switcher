@@ -39,12 +39,12 @@ fn run() -> Result<()> {
     if git_config_path.exists() {
         // Check if it's a symlink first
         if let Ok(target) = fs::read_link(&git_config_path) {
-             if let Some(name) = target.file_name().and_then(|n| n.to_str()) {
-                 current_profile = Some(name.to_string());
-             }
+            if let Some(name) = target.file_name().and_then(|n| n.to_str()) {
+                current_profile = Some(name.to_string());
+            }
         } else {
             // Fallback to hash check if not a symlink or read_link failed (e.g. regular file)
-             if let Ok(hash) = utils::hash_file(&git_config_path) {
+            if let Ok(hash) = utils::hash_file(&git_config_path) {
                 for profile in &profiles {
                     let profile_path = config_dir.join(profile);
                     if let Ok(p_hash) = utils::hash_file(&profile_path) {
@@ -58,7 +58,10 @@ fn run() -> Result<()> {
         }
     }
 
-    println!("Available git configuration profiles in {:?}:\n", config_dir);
+    println!(
+        "Available git configuration profiles in {:?}:\n",
+        config_dir
+    );
 
     for profile in &profiles {
         if Some(profile) == current_profile.as_ref() {
@@ -69,7 +72,11 @@ fn run() -> Result<()> {
     }
 
     if current_profile.is_none() {
-        println!("\n{}", "No active profile detected or current .gitconfig is not managed by git-switcher.".yellow());
+        println!(
+            "\n{}",
+            "No active profile detected or current .gitconfig is not managed by git-switcher."
+                .yellow()
+        );
         println!("Use 'git-switcher switch <profile>' to activate a profile.");
     }
 

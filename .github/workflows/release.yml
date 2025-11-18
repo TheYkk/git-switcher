@@ -1,30 +1,83 @@
-name: goreleaser
+name: Release
 
 on:
-  pull_request:
-  push:
+  release:
+    types: [created]
+
+permissions:
+  contents: write
 
 jobs:
-  goreleaser:
-    runs-on: ubuntu-latest
+  build:
+    name: ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            use_cross: false
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+            use_cross: true
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            use_cross: false
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            use_cross: false
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            use_cross: false
+          - os: windows-latest
+            target: aarch64-pc-windows-msvc
+            use_cross: false
+
     steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
         with:
-          fetch-depth: 0
-      -
-        name: Set up Go
-        uses: actions/setup-go@v4
+          targets: ${{ matrix.target }}
+
+      - name: Install Cross
+        if: matrix.use_cross
+        run: cargo install cross --git https://github.com/cross-rs/cross
+
+      - name: Build
+        shell: bash
+        run: |
+          cmd="cargo"
+          if [[ "${{ matrix.use_cross }}" == "true" ]]; then
+            cmd="cross"
+          fi
+          $cmd build --release --target ${{ matrix.target }}
+
+      - name: Package
+        shell: bash
+        run: |
+          binary_name="git-switcher"
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            binary_name="git-switcher.exe"
+          fi
+
+          dirname="git-switcher-${{ matrix.target }}"
+          mkdir "$dirname"
+          cp "target/${{ matrix.target }}/release/$binary_name" "$dirname/"
+          cp README.md "$dirname/" || true
+          cp LICENSE "$dirname/" || true
+
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            7z a "$dirname.zip" "$dirname"
+            echo "ASSET=$dirname.zip" >> $GITHUB_ENV
+          else
+            tar -czf "$dirname.tar.gz" "$dirname"
+            echo "ASSET=$dirname.tar.gz" >> $GITHUB_ENV
+          fi
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
         with:
-          go-version: "1.24"
-      -
-        name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v5
-        with:
-          distribution: goreleaser
-          version: latest
-          args: release --rm-dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+          files: ${{ env.ASSET }}

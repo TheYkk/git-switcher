@@ -2,7 +2,6 @@ use crate::utils;
 use anyhow::{Context, Result};
 use colored::*;
 use std::fs;
-use std::os::unix::fs::symlink;
 
 pub fn execute(profile_name: &str) {
     if let Err(e) = run(profile_name) {
@@ -44,7 +43,7 @@ fn run(profile_name: &str) -> Result<()> {
     }
 
     // Create symlink
-    symlink(&target_profile_path, &git_config_path).context("Failed to create symlink")?;
+    utils::create_symlink(&target_profile_path, &git_config_path).context("Failed to create symlink")?;
 
     println!(
         "{} Switched to profile {:?}. ~/.gitconfig now points to {:?}.",

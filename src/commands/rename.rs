@@ -3,7 +3,6 @@ use anyhow::{Context, Result};
 use colored::*;
 use inquire::{Select, Text};
 use std::fs;
-use std::os::unix::fs::symlink;
 
 pub fn execute() {
     if let Err(e) = run() {
@@ -88,7 +87,7 @@ fn run() -> Result<()> {
         if let Ok(target) = fs::read_link(&git_config_path) {
             if target == old_path {
                 fs::remove_file(&git_config_path).context("Failed to remove old symlink")?;
-                symlink(&new_path, &git_config_path).context("Failed to create new symlink")?;
+                utils::create_symlink(&new_path, &git_config_path).context("Failed to create new symlink")?;
                 println!(
                     "{} Active profile symlink updated to {:?}.",
                     "Info:".blue(),
